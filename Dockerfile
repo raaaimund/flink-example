@@ -6,7 +6,7 @@ COPY ./src /opt/src
 RUN cd /opt; mvn clean install -Dmaven.test.skip
 
 FROM flink:java8
-COPY --from=builder /opt/target/flink-example-*-jar-with-dependencies.jar /opt/flink/usrlib/flink-example.jar
+COPY --from=builder /opt/target/flink-example-*.jar /opt/flink/usrlib/flink-example.jar
 RUN echo "execution.checkpointing.interval: 10s" >> /opt/flink/conf/flink-conf.yaml; \
     echo "pipeline.object-reuse: true" >> /opt/flink/conf/flink-conf.yaml; \
     echo "pipeline.time-characteristic: EventTime" >> /opt/flink/conf/flink-conf.yaml; \

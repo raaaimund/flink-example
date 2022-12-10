@@ -26,6 +26,8 @@ Windows
 ncat -lk 9999
 ```
 
+You can get the installation of netcat for windows from [here](https://nmap.org/dist/nmap-7.93-setup.exe).
+
 Other useful links
 - https://stackoverflow.com/questions/55018206/flink-streaming-what-exactly-does-sum-do
 
