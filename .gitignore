@@ -1,2 +1,7 @@
 # Project exclude paths
-/target/
+target/
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/shelf
+.idea/libraries
+dependency-reduced-pom.xml

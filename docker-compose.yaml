@@ -1,0 +1,17 @@
+# https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/resource-providers/standalone/docker/
+version: '2.1'
+services:
+  jobmanager:
+    build: .
+    ports:
+      - "8081:8081"
+    command: standalone-job start --job-classname org.example.BlockchainUnconfirmedTransactions
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+  taskmanager:
+    build: .
+    depends_on:
+      - jobmanager
+    command: taskmanager start
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
