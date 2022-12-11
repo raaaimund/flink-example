@@ -23,10 +23,12 @@ public class BlockchainUnconfirmedTransactionsUsingTable {
         StreamExecutionEnvironment streamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment();
         streamExecutionEnvironment.setRuntimeMode(RuntimeExecutionMode.STREAMING);
         StreamTableEnvironment tableEnvironment = StreamTableEnvironment.create(streamExecutionEnvironment);
-        DataStream dataStream = streamExecutionEnvironment.addSource(new BlockchainWebSocketSource(websocketUrl)).name("BlockchainWebSocketSource");
+        DataStream dataStream = streamExecutionEnvironment
+                .addSource(new BlockchainWebSocketSource(websocketUrl))
+                .name("BlockchainWebSocketSource");
         Table transactions = tableEnvironment.fromDataStream(dataStream);
         // ToDo: map JSON to object
-        transactions.select($("f0"));
+        transactions.select($("f0").as("transaction"));
         // https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/datastream/overview/#data-sinks
         // used sink instead of printing with dataStream.print();
         DataStream<Row> resultStream = tableEnvironment.toDataStream(transactions);

@@ -23,6 +23,7 @@ public class BlockchainUnconfirmedTransactions {
         DataStream<Tuple2<String, Integer>> dataStream = env
                 // https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/datastream/overview/#data-sources
                 .addSource(new BlockchainWebSocketSource(websocketUrl))
+                .name("BlockchainWebSocketSource")
                 .map(new UnconfirmedTransactionMapper())
                 .keyBy(transaction -> transaction.f0)
                 .window(TumblingProcessingTimeWindows.of(Time.seconds(windowSizeInSeconds)))
