@@ -1,17 +1,39 @@
 # https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/resource-providers/standalone/docker/
-version: '2.1'
+version: '3.8'
 services:
-  jobmanager:
-    build: .
-    ports:
-      - "8081:8081"
-    command: standalone-job start --job-classname org.example.BlockchainUnconfirmedTransactions
-    environment:
-      - JOB_MANAGER_RPC_ADDRESS=jobmanager
-  taskmanager:
-    build: .
+  jobcreator:
+    build:
+      context: .
+      dockerfile: ./docker/jobcreator/Dockerfile
     depends_on:
       - jobmanager
-    command: taskmanager start
     environment:
-      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+      - JOBS=
+        org.example.BlockchainUnconfirmedTransactions
+        org.example.BlockchainUnconfirmedTransactionsUsingTable
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+  jobmanager:
+    build:
+      context: .
+      dockerfile: ./docker/taskandjobmanager/Dockerfile
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+  taskmanager:
+    build:
+      context: .
+      dockerfile: ./docker/taskandjobmanager/Dockerfile
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 2

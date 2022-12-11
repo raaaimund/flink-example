@@ -14,7 +14,7 @@ file. This example is not dockerized.
 - [window](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/operators/windows/) splits the stream into "buckets" of 5 seconds
 - sum sums the words using an [AggregateFunction](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/operators/windows/#aggregatefunction)
 
-You can use netcat to write to a socket.
+You can use netcat to write to a socket. Installation of netcat for windows is included in nmap [here](https://nmap.org/download).
 
 Linux
 ```bash
@@ -26,8 +26,6 @@ Windows
 ncat -lk 9999
 ```
 
-You can get the installation of netcat for windows from [here](https://nmap.org/dist/nmap-7.93-setup.exe).
-
 Other useful links
 - https://stackoverflow.com/questions/55018206/flink-streaming-what-exactly-does-sum-do
 
@@ -35,7 +33,7 @@ Other useful links
 In this example, we listen to the [Blockchain WebSocket API](https://www.blockchain.com/explorer/api/api_websocket) and
 subscribe to the unconfirmed transactions. Again, we count the unconfirmed transactions within a 5 seconds window.
 You can find the example in the [BlockchainUnconfirmedTransactions.java](src/main/java/org/example/BlockchainUnconfirmedTransactions.java)
-file.
+file. Here is the data from the 
 
 - [addSource](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/sources/) adds a source to the stream which connects to a WebSocket and subscribes to the unconfirmed transactions
 - [map](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/operators/overview/#map) maps the JSON string to a simple key value pair of type Tuple2 ("Transaction", 1)
@@ -63,11 +61,22 @@ The example is dockerized and can be run using the following command:
 docker-compose up
 ```
 
-This will start one task manager and one job manager. The job manager will start the BlockchainUnconfirmedTransactions.
-The Flink UI can be accessed at http://localhost:8081.
+This will start one taskmanager, one jobmanager and the jobcreator. The jobcreator will send all jobs that were passed through the 
+``JOBS`` environment variable defined in the [docker-compose.yaml](docker-compose.yaml) file to the jobmanager. The 
+taskmanager then collects the jobs and executes them. The Flink UI can be accessed at http://localhost:8081.
 
 Don't forget to build, if any code changes are made.
 
 ```bash
 docker-compose build
 ```
+
+#### Add jobs
+The service ``jobcreator`` is used to send the jobs to the ``jobmanager`` via port [8081](https://lists.apache.org/thread/11ls2bf03xyfdbd6sn3cx8hxb04tcboq).
+To add a new job, add the full class name (e.g. ``org.example.BlockchainUnconfirmedTransactions``) to the ``JOBS`` envornment variable
+defined in the ``environment`` section of the ``jobcreator`` service inside [docker-compose.yaml](docker-compose.yaml).
+
+#### Other useful links
+- setting pom.xml dependencies https://nightlies.apache.org/flink/flink-docs-master/docs/dev/configuration/advanced/#anatomy-of-table-dependencies
+- creating docker-compose.yaml file https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/resource-providers/standalone/docker/#session-mode
+-  https://www.youtube.com/watch?v=xm1X9etMXps

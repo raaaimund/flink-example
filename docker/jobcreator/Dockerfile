@@ -7,8 +7,10 @@ RUN cd /opt; mvn clean install -Dmaven.test.skip
 
 FROM flink:java8
 COPY --from=builder /opt/target/flink-example-*.jar /opt/flink/usrlib/flink-example.jar
+COPY ./docker/jobcreator/entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
 RUN echo "execution.checkpointing.interval: 10s" >> /opt/flink/conf/flink-conf.yaml; \
     echo "pipeline.object-reuse: true" >> /opt/flink/conf/flink-conf.yaml; \
     echo "pipeline.time-characteristic: EventTime" >> /opt/flink/conf/flink-conf.yaml; \
-    echo "taskmanager.memory.jvm-metaspace.size: 256m" >> /opt/flink/conf/flink-conf.yaml; \
-# entry point in docker-compose.yaml file
+    echo "taskmanager.memory.jvm-metaspace.size: 256m" >> /opt/flink/conf/flink-conf.yaml;
+ENTRYPOINT ["./entrypoint.sh"]

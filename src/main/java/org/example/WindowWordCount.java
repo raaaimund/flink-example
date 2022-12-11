@@ -11,10 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // tutorial - https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/overview/
-// run "ncat -lk 9999" first on command line
+// run "ncat -lk 9999" first on command line in windows
 public class WindowWordCount {
     private final static Logger logger = LoggerFactory.getLogger(WindowWordCount.class);
-    private final static String host = "localhost";
+    private final static String host = "host.docker.internal";
     private final static int port = 9999;
     private final static String fieldNameToSum = "f1";
     private final static Integer windowSizeInSeconds = 5;
