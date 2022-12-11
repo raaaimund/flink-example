@@ -26,6 +26,8 @@ Windows
 ncat -lk 9999
 ```
 
+This command will listen on port 9999 and wait for incoming connections.
+
 Other useful links
 - https://stackoverflow.com/questions/55018206/flink-streaming-what-exactly-does-sum-do
 

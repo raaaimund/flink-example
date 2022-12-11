@@ -16,6 +16,6 @@ public class UnconfirmedTransactionMapper extends RichMapFunction<String, Tuple2
     // Transaction, 1
     @Override
     public Tuple2<String, Integer> map(String unconfirmedTransaction) {
-        return new Tuple2<String, Integer>("Transaction", 1);
+        return new Tuple2<>("Transaction", 1);
     }
 }

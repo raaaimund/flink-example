@@ -3,12 +3,11 @@ package org.example;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 import org.example.sinks.RowLoggerSink;
-import org.example.sources.BlockChainStreamingSource;
+import org.example.sources.BlockchainWebSocketSource;
 
 import static org.apache.flink.table.api.Expressions.$;
 
@@ -24,7 +23,7 @@ public class BlockchainUnconfirmedTransactionsUsingTable {
         StreamExecutionEnvironment streamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment();
         streamExecutionEnvironment.setRuntimeMode(RuntimeExecutionMode.STREAMING);
         StreamTableEnvironment tableEnvironment = StreamTableEnvironment.create(streamExecutionEnvironment);
-        DataStream dataStream = streamExecutionEnvironment.addSource(new BlockChainStreamingSource(websocketUrl));
+        DataStream dataStream = streamExecutionEnvironment.addSource(new BlockchainWebSocketSource(websocketUrl)).name("BlockchainWebSocketSource");
         Table transactions = tableEnvironment.fromDataStream(dataStream);
         // ToDo: map JSON to object
         transactions.select($("f0"));

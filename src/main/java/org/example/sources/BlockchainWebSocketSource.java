@@ -13,8 +13,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 // https://www.blockchain.com/explorer/api/api_websocket
-public class BlockChainStreamingSource extends RichSourceFunction<String> {
-    private final static Logger logger = LoggerFactory.getLogger(BlockChainStreamingSource.class);
+public class BlockchainWebSocketSource extends RichSourceFunction<String> {
+    private final static Logger logger = LoggerFactory.getLogger(BlockchainWebSocketSource.class);
 
     private transient AsyncHttpClient httpClient;
     private transient BoundRequestBuilder boundRequestBuilder;
@@ -24,7 +24,7 @@ public class BlockChainStreamingSource extends RichSourceFunction<String> {
     private final BlockingQueue<String> unconfirmedTransactions;
     private final String url;
 
-    public BlockChainStreamingSource(String url) {
+    public BlockchainWebSocketSource(String url) {
         this.url = url;
         this.isRunning = true;
         this.unconfirmedTransactions = new ArrayBlockingQueue<>(100);
@@ -32,9 +32,9 @@ public class BlockChainStreamingSource extends RichSourceFunction<String> {
 
     @Override
     public void run(SourceContext<String> sourceContext) throws Exception {
-        WebSocketUpgradeHandler webSocketUpgradeHandler = websockerBuilder
+        WebSocketUpgradeHandler webSocketHandler = websockerBuilder
                 .addWebSocketListener(new BlockchainWebSocketListener(unconfirmedTransactions)).build();
-        boundRequestBuilder.execute(webSocketUpgradeHandler).get();
+        boundRequestBuilder.execute(webSocketHandler).get();
 
         while (isRunning) {
             sourceContext.collect(unconfirmedTransactions.take());
